@@ -1,6 +1,6 @@
 # svelte-preval
 
-preval for svelte
+compile time eval for svelte components
 
 performant:  
 eval static expressions at compile time  
