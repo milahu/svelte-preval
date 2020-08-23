@@ -172,8 +172,8 @@ or
 
 ### funcName
 
-instead of "let x = preval(f)"  
-you can use "let x = custom_preval_name(f)"
+instead of `let x = preval(f)`  
+you can use `let x = custom_preval_name(f)`
 
 local - by changing your App.svelte to
 
