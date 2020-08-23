@@ -1,0 +1,33 @@
+{
+  "name": "svelte-preval",
+  "version": "0.0.1",
+  "description": "evaluate expressions on compile time",
+  "main": "src/sveltePreval.js",
+  "license": "CC-0",
+  "repository": "https://github.com/milahu/svelte-preval",
+  "author": "milahu@gmail.com",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "svelte",
+    "preval",
+    "preprocessor",
+    "preprocess",
+    "compiletime",
+    "compile",
+    "time",
+    "pre",
+    "eval"
+  ],
+  "devDependencies": {
+    "tosource": "^2.0.0-alpha.2",
+    "uglify-js": "^3.10.1"
+  },
+  "peerDependencies": {
+    "acorn": "^8.0.1",
+    "estree-walker": "^2.0.1",
+    "magic-string": "^0.25.7",
+    "svelte": "^3.24.1"
+  }
+}
