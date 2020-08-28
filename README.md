@@ -13,7 +13,7 @@ colocate "all the code" in one place
 powerful:  
 use any node package on compile time
 
-license = public domain = CC-0  
+license = public domain = CC0-1.0  
 warranty = none
 
 ## install
