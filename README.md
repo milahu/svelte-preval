@@ -27,11 +27,10 @@ npm i -D https://github.com/milahu/svelte-preval.git
 TODO better?
 
 ```sh
-cd node_modules/svelte-preval
-npm install
+npm i -D tosource uglify-js
 ```
 
-peerDependencies are provided by svelte
+other peerDependencies are provided by svelte
 
 ## config
 
@@ -48,6 +47,9 @@ export default {
           //defaultOn: true,
           //funcName: 'preval',
           //scriptAttr: 'preval',
+          //workDir: __dirname, // directory of rollup.config.js
+          // here you can add more values
+          // the whole options object is passed to the eval-ed function
         }),
       ],
     }),
@@ -55,7 +57,7 @@ export default {
 };
 ```
 
-## use samples
+## use sample
 
 in your `App.svelte` add to your `<script>`
 
@@ -72,6 +74,129 @@ let testPrevalObj = {
   b: 1.4142135623730951
 };
 ```
+
+## config
+
+### defaultOn
+
+set to false  
+to make preval "normally off"  
+and only enable in  
+```xml
+<script preval>
+or
+<script preval="custom_preval_funcName">
+```
+
+### funcName
+
+instead of `let x = preval(f)`  
+you can use `let x = custom_preval_name(f)`
+
+local - by changing your App.svelte to
+
+```xml
+  <script preval="local_preval_name">
+    let x = local_preval_name(() => ('result'))
+  </script>
+```
+
+global - by changing rollup.config.js to
+
+```js
+preprocess: [
+  sveltePreval({
+    funcName: 'custom_preval_name',
+  }),
+],
+```
+
+### scriptAttr
+
+change the `<script>` attribute  
+to activate preval like `<script preval>`  
+or to change the funcName like `<script preval="myPreval">`
+
+default is "preval", so `<script preval>`
+
+## using modules
+
+yes you can use modules inside the preval code  
+but modules must be in commonJS format
+
+so you can use
+
+```js
+let testPreval = preval(() => {
+  const fs = require('fs');
+  return fs.readFileSync('input.txt').toString();
+});
+```
+
+but this will NOT work [ES6 module format]
+
+```js
+let testPreval = preval(() => {
+  import { moduleFunction } from 'moduleName';
+  // error: [!] (plugin svelte) SyntaxError: 'import' and 'export' may only appear at the top level
+  return moduleFunction();
+});
+```
+
+to use ES6 modules  
+you must transpile to commonJS format
+
+```sh
+npm i -D @babel/core @babel/cli \
+  @babel/plugin-transform-modules-commonjs
+
+./node_modules/@babel/cli/bin/babel.js \
+  --plugins @babel/plugin-transform-modules-commonjs \
+  src/module.js > src/module.cjs
+```
+
+and then use with
+
+```js
+let testPreval = preval(() => {
+  const moduleName = require('/absolute/path/to/module.cjs');
+  return moduleName.moduleFunction();
+});
+```
+
+## using modules with relative paths
+
+require works relative to the directory of `sveltePreval.js`, so
+
+```js
+let res = preval(() => require('./src/script.js').someProp);
+```
+
+will try to require `node_modules/svelte-preval/src/src/script.js`
+
+you could fix that with a relative path like `../../../src/script.js`  
+but this is not portable  
+for example this breaks with `pnpm` package manager  
+cos symlinks are unidirectional and `../../../` is the pnpm global store
+
+better solution: use absolute paths
+
+in your `rollup.config.js` set
+
+```js
+        sveltePreval({
+          baseDir: __dirname, // directory of rollup.config.js
+        }),
+```
+
+and in your `App.svelte` write
+
+```js
+let res = preval(({baseDir}) => require(baseDir+'/src/script.js').someProp);
+```
+
+## more use samples
+
 
 ```js
 // unpack array
@@ -156,95 +281,6 @@ const ace_assets = {
 these outputs are prettified by svelte  
 the script output is minified to preserve line numbers  
 cos the svelte preprocessor accepts no sourcemaps
-
-## config
-
-### defaultOn
-
-set to false  
-to make preval "normally off"  
-and only enable in  
-```xml
-<script preval>
-or
-<script preval="custom_preval_funcName">
-```
-
-### funcName
-
-instead of `let x = preval(f)`  
-you can use `let x = custom_preval_name(f)`
-
-local - by changing your App.svelte to
-
-```xml
-  <script preval="local_preval_name">
-    let x = local_preval_name(() => ('result'))
-  </script>
-```
-
-global - by changing rollup.config.js to
-
-```js
-preprocess: [
-  sveltePreval({
-    funcName: 'custom_preval_name',
-  }),
-],
-```
-
-### scriptAttr
-
-change the `<script>` attribute  
-to activate preval like `<script preval>`  
-or to change the funcName like `<script preval="myPreval">`
-
-default is "preval", so `<script preval>`
-
-## using modules in preval
-
-yes you can use modules inside the preval code  
-but modules must be in commonJS format
-
-so you can use
-
-```js
-let testPreval = preval(() => {
-  const fs = require('fs');
-  return fs.readFileSync('input.txt').toString();
-});
-```
-
-but this will NOT work [ES6 module format]
-
-```js
-let testPreval = preval(() => {
-  import { moduleFunction } from 'moduleName';
-  // error: [!] (plugin svelte) SyntaxError: 'import' and 'export' may only appear at the top level
-  return moduleFunction();
-});
-```
-
-to use ES6 modules  
-you must transpile to commonJS format
-
-```sh
-npm i -D @babel/core @babel/cli \
-  @babel/plugin-transform-modules-commonjs
-
-./node_modules/@babel/cli/bin/babel.js \
-  --plugins @babel/plugin-transform-modules-commonjs \
-  src/module.js > src/module.cjs
-```
-
-and then use with
-
-```js
-let testPreval = preval(() => {
-  const moduleName = require('./path/to/module.cjs');
-  return moduleName.moduleFunction();
-});
-```
 
 ## notes
 
