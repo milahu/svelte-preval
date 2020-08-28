@@ -15,21 +15,40 @@ const node_tosource = require("tosource");
 const child_process = require('child_process');
 const minifySync_exe = 'node_modules/svelte-preval/src/minify-es6-sync.js';
 
-module.exports = function sveltePreval(options={
+module.exports = function sveltePreval(options) {
 
-  // true = preval in all <script>
-  // false = preval only in <script scriptAttr>
-  defaultOn: true,
+  options = Object.assign(
+    {},
+    // default options
+    {
+      defaultOn: true,
+      // true = preval in all <script>
+      // false = preval only in <script scriptAttr>
 
-  // App.svelte: <script scriptAttr="funcName">
-  // default: <script preval="preval">
-  funcName: "preval",
+      funcName: "preval",
+      // App.svelte: <script scriptAttr="funcName">
+      // default: <script preval="preval">
 
-  // App.svelte: <script scriptAttr>
-  // default: <script preval>
-  scriptAttr: "preval",
+      scriptAttr: "preval",
+      // App.svelte: <script scriptAttr>
+      // default: <script preval>
 
-}) {
+      baseDir: '.',
+      // set this to `__dirname` in rollup.config.js
+      // so you can require local scripts like
+      // let res = preval(({baseDir}) => {
+      //   return require(baseDir+'/src/myScript.js').myProp;
+      // });
+      // default baseDir is
+      // [..../]node_modules/svelte-preval/src
+      // which is not portable
+      // this breaks with pnpm, for example
+      // cos pnpm has its node_modules outside your project path
+      // and your project only has symlinks to pnpm's global store
+
+    },
+    options
+  );
 
   return {
 
@@ -51,7 +70,6 @@ module.exports = function sveltePreval(options={
       }
 
       // parse script
-      // TODO allow to transpile from typescript etc
       let ast;
       try {
         ast = acorn_parse(content, {
@@ -60,7 +78,7 @@ module.exports = function sveltePreval(options={
         });
       } catch(e) {
 
-        const errCtxLen = 50;
+        const errCtxLen = 100;
         const errCtx = content.substring(
           Math.max(e.pos - errCtxLen, 0),
           Math.min(e.pos + errCtxLen, content.length),
@@ -105,8 +123,10 @@ module.exports = function sveltePreval(options={
 
           const addLines = (arg0Src.match(/\n/g) || []).length;
 
-          // TODO allow to transpile from typescript etc
-          const evalRes = eval("(" + arg0Src + ")()");
+          // eval
+          // pass options object from sveltePreval(options)
+          // to the eval-ed function
+          const evalRes = eval(`(${arg0Src})(options);`);
 
           // object to source
           let evalResSrc = node_tosource(evalRes);
