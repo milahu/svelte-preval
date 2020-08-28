@@ -1,6 +1,6 @@
 // sveltePreval.js
 // compile time eval for svelte components
-// license CC-0 + no warranty
+// license CC0-1.0 + no warranty
 
 // acorn = ast from javascript parser
 // estree-walker = read-only AST tree walker
