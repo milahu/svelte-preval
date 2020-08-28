@@ -20,14 +20,12 @@
     "pre",
     "eval"
   ],
-  "devDependencies": {
-    "tosource": "^2.0.0-alpha.2",
-    "uglify-js": "^3.10.1"
-  },
   "peerDependencies": {
     "acorn": "^7",
     "estree-walker": "^2.0.1",
     "magic-string": "^0.25.7",
-    "svelte": "^3.24.1"
+    "svelte": "^3.24.1",
+    "tosource": "^2.0.0-alpha.2",
+    "uglify-js": "^3.10.1"
   }
 }
