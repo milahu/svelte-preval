@@ -15,19 +15,19 @@ const node_tosource = require("tosource");
 const child_process = require('child_process');
 const minifySync_exe = 'node_modules/svelte-preval/src/minify-es6-sync.js';
 
-module.exports = function sveltePreval({
+module.exports = function sveltePreval(options={
 
   // true = preval in all <script>
   // false = preval only in <script scriptAttr>
-  defaultOn = true,
+  defaultOn: true,
 
   // App.svelte: <script scriptAttr="funcName">
   // default: <script preval="preval">
-  funcName = "preval",
+  funcName: "preval",
 
   // App.svelte: <script scriptAttr>
   // default: <script preval>
-  scriptAttr = "preval",
+  scriptAttr: "preval",
 
 }) {
 
@@ -38,14 +38,14 @@ module.exports = function sveltePreval({
 
       // override global config per script
       // <script preval="local_funcName">
-      if (scriptAttr in attributes) {
-        if (attributes[scriptAttr] !== true) {
-          funcName = attributes[scriptAttr];
+      if (options.scriptAttr in attributes) {
+        if (attributes[options.scriptAttr] !== true) {
+          options.funcName = attributes[options.scriptAttr];
         }
         // true means "empty attribute" <script preval>
-        // --> keep default funcName
+        // --> keep default options.funcName
       }
-      else if (defaultOn === false) {
+      else if (options.defaultOn === false) {
         // no change
         return { code: content };
       }
@@ -86,14 +86,14 @@ module.exports = function sveltePreval({
 
           if (
             node.type !== "CallExpression" ||
-            node.callee.name !== funcName
+            node.callee.name !== options.funcName
           ) {
             // ignore this node
             return;
           }
 
           if (node.arguments.length !== 1) {
-            return console.error(`preval usage: let res = ${funcName}(f);`);
+            return console.error(`preval usage: let res = ${options.funcName}(f);`);
           }
 
           const nodeSrc = content.substring(node.start, node.end);
