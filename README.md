@@ -197,9 +197,9 @@ let res = preval(({baseDir}) => require(baseDir+'/src/script.js').someProp);
 
 ## more use samples
 
+### unpack array
 
 ```js
-// unpack array
 let [a, b] = preval(() => ([
   Math.PI * 0.5,
   Math.sqrt(2),
@@ -210,8 +210,9 @@ let [a, b] = [1.5707963267948966, 1.4142135623730951];
 
 ```
 
+### unpack properties to global scope
+
 ```js
-// unpack properties to global scope
 Object.assign(window, preval(() => ({
   a: Math.PI * 0.5,
   b: Math.sqrt(2),
@@ -225,8 +226,9 @@ Object.assign(window, {
 
 ```
 
+### preval functions
+
 ```js
-// preval functions
 let testPrevalFuncs = preval(()=>([
   ()=>'hello',
   ()=>('world'),
@@ -245,8 +247,9 @@ window.testPreval.funcs = [
 ];
 ```
 
+### get file list
+
 ```js
-// get file list
 const ace_assets = preval(() => {
 
   const glob = require('glob');
@@ -277,6 +280,8 @@ const ace_assets = {
 };
 
 ```
+
+### inline asset files
 
 ```js
 // inline asset files to javascript on compile time
