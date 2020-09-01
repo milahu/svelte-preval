@@ -278,6 +278,60 @@ const ace_assets = {
 
 ```
 
+```js
+// inline asset files to javascript on compile time
+// move to end of script for faster page load
+
+// set options.baseDir in rollup.config.js:
+// sveltePreval({baseDir: __dirname})
+// so file paths are relative to project root
+
+// install dependency:
+// npm i -D mime-types
+
+let fotoData = preval(function(options) {
+
+  const imgBase = '/src/images';
+  let fotoData = [
+    {uri: '/homer.jpg', name: 'Homer'},
+    {uri: '/lisa.webp', name: 'Lisa'},
+    {uri: 'data:image/jpeg,', name: 'empty foto'},
+  ];
+
+  const fs = require('fs');
+  const mime = require('mime-types');
+
+  return fotoData.map(({uri, name}) => {
+
+    // options.baseDir is defined in rollup.config.js
+    const fileAbs = options.baseDir + imgBase + uri;
+
+    if (!fs.existsSync(fileAbs)) {
+      console.log('error in preval inline: no such file: '+fileAbs);
+      return {uri, name}; // no change
+    }
+
+    const fileType = mime.lookup(fileAbs)
+      || 'application/octet-stream';
+    const base64data = fs.readFileSync(
+      fileAbs, {encoding: 'base64'}
+    );
+    const dataUri = 'data:'+fileType+';base64,'+base64data;
+
+    return {uri: dataUri, name};
+  });
+
+});
+
+// result:
+let fotoData = [
+  {uri: 'data:image/jpeg,....', name: 'Homer'},
+  {uri: 'data:image/webp,....', name: 'Lisa'},
+  {uri: 'data:image/jpeg,', name: 'empty foto'},
+];
+
+```
+
 these outputs are prettified by svelte  
 the script output is minified to preserve line numbers  
 cos the svelte preprocessor accepts no sourcemaps
