@@ -338,6 +338,10 @@ cos the svelte preprocessor accepts no sourcemaps
 
 ## notes
 
+wait for [svelte PR #5015 add source map support for preprocessors](https://github.com/sveltejs/svelte/pull/5015)  
+and use sourcemap instead of minify  
+to keep line numbers
+
 support ES6 module format  
 transform require-d modules on the fly  
 to commonJS format, compatible with require()  
