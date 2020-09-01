@@ -47,7 +47,7 @@ export default {
           //defaultOn: true,
           //funcName: 'preval',
           //scriptAttr: 'preval',
-          //workDir: __dirname, // directory of rollup.config.js
+          //baseDir: __dirname, // directory of rollup.config.js = project root
           // here you can add more values
           // the whole options object is passed to the eval-ed function
         }),
