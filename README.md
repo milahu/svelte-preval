@@ -237,7 +237,7 @@ let testPrevalFuncs = preval(()=>([
 ]));
 
 // result
-window.testPreval.funcs = [
+let testPrevalFuncs = [
   () => "hello",
   () => "world",
   () => "foo",
