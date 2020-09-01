@@ -150,6 +150,12 @@ module.exports = function sveltePreval(options) {
             throw new Error('minify failed');
           }
 
+          // ; is prepended to strings, like
+          // ;"string content"
+          if (evalResSrc[0] == ';') {
+            evalResSrc = evalResSrc.slice(1);
+          }
+
           if (evalResSrc[0] == '(' && evalResSrc.slice(-2) == ');') {
             evalResSrc = evalResSrc.slice(1, -2);
           } else {
