@@ -337,6 +337,38 @@ let fotoData = [
 
 ```
 
+### inline source code
+
+```js
+// set options.baseDir in rollup.config.js:
+// sveltePreval({baseDir: __dirname})
+
+window.sourceCode = preval(
+  ({baseDir}) => {
+    const sourceFileĹist = [
+      'src/App.svelte',
+      'src/main.js',
+      'public/index.html',
+      'rollup.config.js',
+      'package.json',
+      'README.md',
+      'LICENSE',
+    ];
+    const fs = require('fs');
+    return sourceFileĹist.reduce(
+      (acc, sourceFile) => {
+        acc[sourceFile] = fs.readFileSync(
+          baseDir+'/'+sourceFile, {
+          encoding: 'utf-8',
+        });
+        return acc;
+      },
+      {}
+    );
+  }
+);
+```
+
 these outputs are prettified by svelte  
 the script output is minified to preserve line numbers  
 cos the svelte preprocessor accepts no sourcemaps
