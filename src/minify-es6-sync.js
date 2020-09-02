@@ -4,7 +4,8 @@
 // synchronous minify of es6 javascript
 // license CC-0 + no warranty
 
-if (false) { // sample use
+// sample use
+/*
 
   const child_process = require('child_process');
   const code_in = '(()=>(1))();';
@@ -23,7 +24,7 @@ if (false) { // sample use
     console.log(error.stdout);
     throw new Error("minify failed");
   }
-}
+*/
 
 const terser_minify = require("terser").minify; // async
 
@@ -65,15 +66,29 @@ readable.on('end', async () => { // async
       const err_raised = code_in.substring(ep, ep + cl);
       console.log(`parse error raised at: ${err_raised}`);
 
-      process.exit(1);
+      process.stdout.on('drain', function () {
+        // write is done
+        process.exit(2); // error 2
+      });
     }
 
     process.stdout.write(minify_res.code);
-    process.exit(0); // success
+    process.stdout.on('drain', function () {
+      // write is done
+      process.exit(0); // success
+    });
+
+    // stdout.write is non blocking (async)
+    // calling process.exit()
+    // would kill the script before write is done
+    // noticable for outputs > 250k chars
 
   } catch (error) {
     console.log('error:');
     console.dir(error);
-    process.exit(1);
+    process.stdout.on('drain', function () {
+      // write is done
+      process.exit(1); // error 1
+    });
   }
 });

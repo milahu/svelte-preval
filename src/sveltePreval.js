@@ -139,8 +139,10 @@ module.exports = function sveltePreval(options) {
             evalResSrc = child_process.execSync(
               "node "+minifySync_exe.replace(/([ \t])/g, '\\$1'), {
               input: evalResSrc,
-              timeout: 10000,
+              //timeout: 10000, // 10 seconds
               encoding: 'utf-8',
+              maxBuffer: Infinity,
+              windowsHide: true, // windows os
             }); 
           }
           catch (error) {
