@@ -27,7 +27,7 @@ npm i -D https://github.com/milahu/svelte-preval.git
 TODO better?
 
 ```sh
-npm i -D tosource uglify-js
+npm i -D tosource terser sync-rpc
 ```
 
 other peerDependencies are provided by svelte
