@@ -6,7 +6,7 @@
 // estree-walker = read-only AST tree walker
 // tosource = object to javascript code generator
 // magic-string = replace strings
-// child_process = workaround for minifySync
+// sync-rpc = workaround for minifySync
 
 const acorn_parse = require("acorn").parse;
 const estree_walk = require("estree-walker").walk;
@@ -15,6 +15,12 @@ const node_tosource = require("tosource");
 const syncRpc = require('sync-rpc');
 const minifySync = syncRpc(
   __dirname+'/terser-minify-sync-rpc-worker.js');
+
+const minifyConfig = {
+  sourceMap: false, ecma: 2020,
+  compress: false, mangle: false,
+  output: { beautify: false }, // uglify
+};
 
 
 
