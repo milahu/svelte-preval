@@ -20,6 +20,8 @@ const minifyConfig = {
   sourceMap: false, ecma: 2020,
   compress: false, mangle: false,
   output: { beautify: false }, // uglify
+  keep_fnames: true, keep_classnames: true,
+  rename: false,
 };
 
 
@@ -140,12 +142,12 @@ module.exports = function sveltePreval(options) {
           // object to source
           let evalResSrc = node_tosource(evalRes);
 
-          // pack expression (expr); to make minify happy
-          evalResSrc = '('+evalResSrc+');';
+          // pack expr to f(expr); to make minify happy
+          evalResSrc = 'f('+evalResSrc+');';
 
           // minify to one line
           try {
-            let minifyRes = minifySync(evalResSrc, minifyConfig);
+            let minifyRes = minifySync([evalResSrc, minifyConfig]);
             evalResSrc = minifyRes.code;
           }
           catch (error) {
@@ -154,19 +156,8 @@ module.exports = function sveltePreval(options) {
             throw new Error('minify failed');
           }
 
-          // ; is prepended to strings, like
-          // ;"string content"
-          if (evalResSrc[0] == ';') {
-            evalResSrc = evalResSrc.slice(1);
-          }
-
-          if (evalResSrc[0] == '(' && evalResSrc.slice(-2) == ');') {
-            evalResSrc = evalResSrc.slice(1, -2);
-          } else {
-            // braces were removed by minify
-            // sample: ([1,2,3,4]); --> [1,2,3,4];
-            evalResSrc = evalResSrc.slice(0, -1);
-          }
+          // unpack f(expr); to expr
+          evalResSrc = evalResSrc.slice(2, -2);
 
           // add empty lines to keep line numbers without sourcemap
           evalResSrc += "\n".repeat(addLines);
