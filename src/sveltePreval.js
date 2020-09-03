@@ -12,8 +12,11 @@ const acorn_parse = require("acorn").parse;
 const estree_walk = require("estree-walker").walk;
 const magicString = require("magic-string");
 const node_tosource = require("tosource");
-const child_process = require('child_process');
-const minifySync_exe = 'node_modules/svelte-preval/src/minify-es6-sync.js';
+const syncRpc = require('sync-rpc');
+const minifySync = syncRpc(
+  __dirname+'/terser-minify-sync-rpc-worker.js');
+
+
 
 module.exports = function sveltePreval(options) {
 
@@ -134,21 +137,14 @@ module.exports = function sveltePreval(options) {
           // pack expression (expr); to make minify happy
           evalResSrc = '('+evalResSrc+');';
 
-          // call `async minify` wrapped as external script
+          // minify to one line
           try {
-            evalResSrc = child_process.execSync(
-              "node "+minifySync_exe.replace(/([ \t])/g, '\\$1'), {
-              input: evalResSrc,
-              //timeout: 10000, // 10 seconds
-              encoding: 'utf-8',
-              maxBuffer: Infinity,
-              windowsHide: true, // windows os
-            }); 
+            let minifyRes = minifySync(evalResSrc, minifyConfig);
+            evalResSrc = minifyRes.code;
           }
           catch (error) {
-            // timeout or exit(1)
             console.log('error in minify:');
-            console.log(error.stdout);
+            console.dir(error);
             throw new Error('minify failed');
           }
 
