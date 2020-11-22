@@ -398,3 +398,35 @@ change `<script type="x">`?
 
 expand this to use the [sweet.js macro system](https://jlongster.com/Stop-Writing-JavaScript-Compilers--Make-Macros-Instead)  
 see: sweetjs macro [constexpr](https://gist.github.com/natefaubion/f4be4c8531ef45de87b4) - evaluate expressions at compile time
+
+## similar projects
+
+### babel-plugin-compile-time-expressions
+
+https://github.com/wereHamster/babel-plugin-compile-time-expressions
+
+using functions for code, like svelte-preval. very flexible
+
+```js
+// input
+const x = compileTimeExpression(({t}) =>
+  t.stringLiteral("Hello" + "World"))
+
+// output
+const x = "HelloWorld"
+```
+
+### babel-plugin-preval
+
+https://github.com/kentcdodds/babel-plugin-preval
+
+using template-strings for code. less flexible
+
+```js
+// input
+const x = preval`module.exports = 1`
+
+// output
+const x = 1
+```
+
