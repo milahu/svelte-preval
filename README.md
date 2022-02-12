@@ -195,7 +195,7 @@ and in your `App.svelte` write
 let res = preval(({baseDir}) => require(baseDir+'/src/script.js').someProp);
 ```
 
-## more use samples
+## more examples
 
 ### unpack array
 
