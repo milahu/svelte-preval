@@ -57,7 +57,7 @@ export default {
 };
 ```
 
-## use sample
+## example
 
 in your `App.svelte` add to your `<script>`
 
