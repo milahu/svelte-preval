@@ -430,3 +430,10 @@ const x = preval`module.exports = 1`
 const x = 1
 ```
 
+### prepack
+
+https://github.com/facebookarchive/prepack - 15K stars - A JavaScript bundle optimizer
+
+focus on react
+
+> Prepack is a partial evaluator for JavaScript. Prepack rewrites a JavaScript bundle, resulting in JavaScript code that executes more efficiently. For initialization-heavy code, Prepack works best in an environment where JavaScript parsing is effectively cached.
