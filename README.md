@@ -19,7 +19,7 @@ warranty = none
 ## install
 
 ```sh
-npm i -D https://github.com/milahu/svelte-preval.git
+npm i -D https://github.com/milahu/svelte-preval
 ```
 
 ### install dependencies
