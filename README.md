@@ -401,6 +401,31 @@ see: sweetjs macro [constexpr](https://gist.github.com/natefaubion/f4be4c8531ef4
 
 ## similar projects
 
+### vite-plugin-compile-time
+
+https://github.com/egoist/vite-plugin-compile-time
+
+the magic function is `import.meta.compileTime`
+
+```ts
+// get-data.ts
+import fs from "fs"
+
+export default async () => {
+  const post = await fs.promises.readFile("./post.md", "utf8")
+  return {
+    data: { post },
+  }
+}
+```
+
+```ts
+// index.ts
+// get the data at compile time
+const data = import.meta.compileTime("./get-data.ts")
+assert.deepEqual(data, { post: "....." })
+```
+
 ### babel-plugin-compile-time-expressions
 
 https://github.com/wereHamster/babel-plugin-compile-time-expressions
